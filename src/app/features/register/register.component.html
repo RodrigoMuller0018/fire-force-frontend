@@ -1,0 +1,138 @@
+<div class="register-page">
+  <div class="register-card">
+    <header class="register-header">
+      <i class="pi pi-user-plus register-icon"></i>
+      <h1 class="register-title">Criar conta</h1>
+      <p class="register-subtitle">Cadastre-se no FIRE-FORCE</p>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="register-form">
+      <!-- nome -->
+      <div class="field">
+        <label for="name">Nome</label>
+        <input
+          pInputText
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="Seu nome completo"
+          autocomplete="name"
+          fluid
+        />
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <small class="error-text">
+            @if (form.controls.name.hasError('required')) {
+              Nome é obrigatório
+            } @else if (form.controls.name.hasError('minlength')) {
+              Mínimo 2 caracteres
+            }
+          </small>
+        }
+      </div>
+
+      <!-- email -->
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="seu@email.com"
+          autocomplete="email"
+          fluid
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <small class="error-text">
+            @if (form.controls.email.hasError('required')) {
+              Email é obrigatório
+            } @else if (form.controls.email.hasError('email')) {
+              Email inválido
+            }
+          </small>
+        }
+      </div>
+
+      <!-- CPF -->
+      <div class="field">
+        <label for="document">CPF</label>
+        <input
+          pInputText
+          id="document"
+          type="text"
+          formControlName="document"
+          placeholder="000.000.000-00"
+          inputmode="numeric"
+          fluid
+        />
+        @if (form.controls.document.touched && form.controls.document.invalid) {
+          <small class="error-text">
+            @if (form.controls.document.hasError('required')) {
+              CPF é obrigatório
+            } @else if (form.controls.document.hasError('minlength')) {
+              Mínimo 11 dígitos
+            }
+          </small>
+        }
+      </div>
+
+      <!-- senha (com indicador de força — feedback=true) -->
+      <div class="field">
+        <label for="password">Senha</label>
+        <p-password
+          inputId="password"
+          formControlName="password"
+          placeholder="••••••••"
+          [toggleMask]="true"
+          [feedback]="true"
+          [fluid]="true"
+        ></p-password>
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <small class="error-text">
+            @if (form.controls.password.hasError('required')) {
+              Senha é obrigatória
+            } @else if (form.controls.password.hasError('minlength')) {
+              Mínimo 6 caracteres
+            }
+          </small>
+        }
+      </div>
+
+      <!-- confirmar senha -->
+      <div class="field">
+        <label for="confirmPassword">Confirmar senha</label>
+        <p-password
+          inputId="confirmPassword"
+          formControlName="confirmPassword"
+          placeholder="••••••••"
+          [toggleMask]="true"
+          [feedback]="false"
+          [fluid]="true"
+        ></p-password>
+        @if (form.controls.confirmPassword.touched && form.controls.confirmPassword.hasError('required')) {
+          <small class="error-text">Confirmação obrigatória</small>
+        } @else if (form.controls.confirmPassword.touched && form.hasError('passwordsMismatch')) {
+          <small class="error-text">As senhas não coincidem</small>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage()!" styleClass="full-width"></p-message>
+      }
+
+      <p-button
+        type="submit"
+        label="Cadastrar"
+        icon="pi pi-user-plus"
+        styleClass="full-width"
+        [loading]="isSubmitting()"
+        [disabled]="isSubmitting()"
+      ></p-button>
+
+      <p class="login-link">
+        Já tem conta?
+        <a routerLink="/auth/login">Entrar</a>
+      </p>
+    </form>
+  </div>
+</div>

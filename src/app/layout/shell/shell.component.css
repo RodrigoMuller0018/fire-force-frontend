@@ -1,0 +1,78 @@
+/* Shell ocupa 100% e organiza tudo em colunas/linhas */
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--app-bg);
+}
+
+/* corpo: sidebar (esquerda) + conteúdo (direita).
+   position: relative pra o backdrop em mobile ficar dentro desse retângulo. */
+.shell-body {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+/* área principal: rola sozinha; padding interno pras telas.
+   min-width: 0 evita que conteúdo largo (tabelas, código) expanda o flex */
+.shell-main {
+  flex: 1;
+  padding: var(--space-5);
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+/* backdrop: escondido por padrão; só aparece em mobile com sidebar aberta */
+.backdrop {
+  display: none;
+}
+
+/* ============================================================
+   DESKTOP (>= 768px): sidebar no fluxo normal; botão menu colapsa
+   ============================================================ */
+@media (min-width: 768px) {
+  /* quando o usuário fecha a sidebar, ela some e o conteúdo ocupa tudo */
+  .shell:not(.sidebar-open) app-sidebar {
+    display: none;
+  }
+}
+
+/* ============================================================
+   MOBILE (< 768px): sidebar vira drawer (sobrepõe o conteúdo)
+   ============================================================ */
+@media (max-width: 767px) {
+  /* sidebar fica fixa colando na esquerda, abaixo da topbar */
+  app-sidebar {
+    position: fixed;
+    top: 62px;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    /* fora da tela por padrão; volta com transform quando .sidebar-open */
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  .shell.sidebar-open app-sidebar {
+    transform: translateX(0);
+  }
+
+  /* backdrop escurece o conteúdo atrás da sidebar (UX de drawer) */
+  .shell.sidebar-open .backdrop {
+    display: block;
+    position: fixed;
+    top: 62px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999; /* abaixo da sidebar (1000), acima do conteúdo */
+  }
+}

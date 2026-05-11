@@ -1,0 +1,81 @@
+<!-- container que centraliza o card na tela -->
+<div class="login-page">
+  <div class="login-card">
+    <!-- cabeçalho com ícone e título -->
+    <header class="login-header">
+      <i class="pi pi-bolt login-icon"></i>
+      <h1 class="login-title">FIRE-FORCE</h1>
+      <p class="login-subtitle">Entre na sua conta</p>
+    </header>
+
+    <!-- formulário reativo: [formGroup] amarra ao FormGroup do TS -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- campo email -->
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="seu@email.com"
+          autocomplete="email"
+          fluid
+        />
+        <!-- mensagem de erro: só aparece se o campo foi tocado E é inválido -->
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <small class="error-text">
+            @if (form.controls.email.hasError('required')) {
+              Email é obrigatório
+            } @else if (form.controls.email.hasError('email')) {
+              Email inválido
+            }
+          </small>
+        }
+      </div>
+
+      <!-- campo senha -->
+      <div class="field">
+        <label for="password">Senha</label>
+        <p-password
+          inputId="password"
+          formControlName="password"
+          placeholder="••••••••"
+          [toggleMask]="true"
+          [feedback]="false"
+          [fluid]="true"
+        ></p-password>
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <small class="error-text">
+            @if (form.controls.password.hasError('required')) {
+              Senha é obrigatória
+            } @else if (form.controls.password.hasError('minlength')) {
+              Mínimo 6 caracteres
+            }
+          </small>
+        }
+      </div>
+
+      <!-- erro do servidor (credenciais inválidas etc) -->
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage()!" styleClass="full-width"></p-message>
+      }
+
+      <!-- botão submit (loading desabilita ele e mostra spinner) -->
+      <p-button
+        type="submit"
+        label="Entrar"
+        icon="pi pi-sign-in"
+        styleClass="full-width"
+        [loading]="isSubmitting()"
+        [disabled]="isSubmitting()"
+      ></p-button>
+
+      <!-- link pra tela de cadastro -->
+      <p class="signup-link">
+        Não tem conta?
+        <a routerLink="/auth/register">Cadastre-se</a>
+      </p>
+    </form>
+  </div>
+</div>

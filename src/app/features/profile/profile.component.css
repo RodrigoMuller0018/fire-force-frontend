@@ -1,0 +1,142 @@
+/* Profile — página de informações do usuário */
+
+.page-header {
+  margin-bottom: var(--space-5);
+}
+
+.page-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-1) 0;
+}
+
+.page-header p {
+  margin: 0;
+  color: var(--app-text-muted);
+}
+
+.info-msg {
+  margin-bottom: var(--space-4);
+}
+
+/* card base — usado pelos dois cards (identidade e sessão) */
+.card {
+  padding: var(--space-5);
+  background-color: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+/* card identidade: avatar grande + info */
+.identity-card {
+  display: flex;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+
+@media (max-width: 480px) {
+  .identity-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--app-primary);
+  color: white;
+  font-size: 2rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.identity-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+.email {
+  color: var(--app-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.id-label {
+  font-size: 0.8rem;
+  color: var(--app-text-muted);
+}
+
+.id-value {
+  display: block;
+  padding: var(--space-2);
+  background-color: var(--app-bg);
+  border-radius: var(--radius-sm);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+/* card sessão */
+.session-card h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-4) 0;
+}
+
+.session-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 480px) {
+  .session-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.session-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-label {
+  font-size: 0.85rem;
+  color: var(--app-text-muted);
+}
+
+.session-item strong {
+  color: var(--app-text);
+}
+
+.muted {
+  color: var(--app-text-muted);
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.logout-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-5);
+}
+
+:host ::ng-deep .full-width {
+  width: 100%;
+}

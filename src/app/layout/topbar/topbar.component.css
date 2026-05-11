@@ -1,0 +1,92 @@
+/* Topbar: barra fixa no topo (62px), branca, com sombra leve */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 62px;
+  padding: 0 var(--space-4);
+  background-color: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.topbar-left,
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* botão de menu (ícone de hambúrguer) */
+.menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--app-text);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.15s;
+}
+
+.menu-btn:hover {
+  background-color: var(--app-bg);
+}
+
+/* logo */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  color: var(--app-text);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.brand i {
+  color: var(--app-primary);
+  font-size: 1.3rem;
+}
+
+/* botão do usuário (avatar + nome + chevron) */
+.user-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  color: var(--app-text);
+  transition: background-color 0.15s;
+}
+
+.user-btn:hover {
+  background-color: var(--app-bg);
+}
+
+.user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--app-primary);
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* esconde nome do usuário em telas pequenas (deixa só o avatar) */
+@media (max-width: 480px) {
+  .user-name {
+    display: none;
+  }
+}

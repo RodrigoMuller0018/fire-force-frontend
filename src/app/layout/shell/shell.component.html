@@ -1,0 +1,18 @@
+<!-- estrutura: topbar em cima, sidebar à esquerda, conteúdo à direita -->
+<div class="shell" [class.sidebar-open]="sidebarOpen()">
+  <!-- topbar emite (toggleMenu) quando o usuário clica no botão de hambúrguer -->
+  <app-topbar (toggleMenu)="toggleSidebar()"></app-topbar>
+
+  <div class="shell-body">
+    <app-sidebar></app-sidebar>
+
+    <!-- backdrop: só aparece em mobile com sidebar aberta (controlado por CSS).
+         Clicar nele fecha a sidebar (padrão UX de drawer). -->
+    <div class="backdrop" (click)="closeSidebar()"></div>
+
+    <main class="shell-main">
+      <!-- router-outlet renderiza a feature ativa (dashboard, profile, etc) -->
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

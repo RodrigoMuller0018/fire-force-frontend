@@ -1,23 +1,27 @@
 {
-  "_comment": "Proxy de dev: redireciona /api/auth/* pro auth-service (8001) e /api/account/* pro account-service (8000). Evita CORS em desenvolvimento.",
+  "_comment": "Proxy de dev: redireciona /api/auth/* pro auth-service (8001) e /api/account/* + /api/category/* pro account-service (8002). Evita CORS em desenvolvimento.",
 
   "/api/auth": {
     "target": "http://localhost:8001",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
-    "pathRewrite": {
-      "^/api": ""
-    }
+    "pathRewrite": { "^/api": "" }
   },
 
   "/api/account": {
-    "target": "http://localhost:8000",
+    "target": "http://localhost:8002",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
-    "pathRewrite": {
-      "^/api": ""
-    }
+    "pathRewrite": { "^/api": "" }
+  },
+
+  "/api/category": {
+    "target": "http://localhost:8002",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": { "^/api": "" }
   }
 }

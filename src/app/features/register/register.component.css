@@ -1,0 +1,85 @@
+/* estilos do componente Register (visual parecido com o Login, mas com mais campos) */
+
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: linear-gradient(135deg, #f4f6f8 0%, #e0e7ef 100%);
+}
+
+.register-card {
+  width: 100%;
+  max-width: 460px;
+  background-color: var(--app-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: var(--space-5);
+}
+
+.register-icon {
+  font-size: 2.5rem;
+  color: var(--app-primary);
+  margin-bottom: var(--space-2);
+}
+
+.register-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-1) 0;
+  color: var(--app-text);
+}
+
+.register-subtitle {
+  margin: 0;
+  color: var(--app-text-muted);
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field label {
+  font-weight: 500;
+  color: var(--app-text);
+}
+
+.error-text {
+  color: var(--app-danger);
+  font-size: 0.85rem;
+}
+
+.login-link {
+  text-align: center;
+  margin: var(--space-2) 0 0 0;
+  color: var(--app-text-muted);
+}
+
+.login-link a {
+  color: var(--app-primary);
+  font-weight: 500;
+  text-decoration: none;
+  margin-left: var(--space-1);
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+:host ::ng-deep .full-width {
+  width: 100%;
+}

@@ -5,8 +5,9 @@ import { firstValueFrom } from 'rxjs';
 
 import { User } from '../models/user.model';
 
-// chave usada no localStorage pra persistir o token entre reloads
+// chaves usadas no localStorage pra persistir token + user entre reloads
 const TOKEN_STORAGE_KEY = 'fire_force_token';
+const USER_STORAGE_KEY = 'fire_force_user';
 
 // informações decodificadas do JWT (iat, exp como Date) — útil pra tela de perfil
 export interface TokenInfo {
@@ -25,14 +26,26 @@ export class AuthService {
   // signal que guarda o token JWT (null = deslogado) — inicial vem do localStorage
   private readonly tokenSignal = signal<string | null>(this.readTokenFromStorage());
 
-  // signal que guarda o usuário atual — restaurado do token se houver (sobrevive a reload)
-  private readonly userSignal = signal<User | null>(this.userFromToken(this.tokenSignal()));
+  // signal que guarda o usuário atual — lido do localStorage (sobrevive a reload)
+  // OBS: o JWT atual do backend só tem "sub" (uuid). Como name/email não estão no token,
+  // a gente persiste o User separado no momento do login/cadastro.
+  private readonly userSignal = signal<User | null>(this.readUserFromStorage());
 
   // expõe o token como read-only pra fora do serviço
   readonly token = this.tokenSignal.asReadonly();
 
   // expõe o usuário como read-only
   readonly user = this.userSignal.asReadonly();
+
+  constructor() {
+    // sanidade: se tem token mas não tem user salvo, o localStorage está num estado
+    // inconsistente (ex: token de uma sessão antiga, antes da gente persistir user).
+    // Limpa tudo silenciosamente — o authGuard redireciona pro /auth/login.
+    if (this.tokenSignal() !== null && this.userSignal() === null) {
+      this.tokenSignal.set(null);
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+    }
+  }
 
   // computed: tá logado se tiver token
   readonly isLoggedIn = computed(() => this.tokenSignal() !== null);
@@ -52,26 +65,40 @@ export class AuthService {
   });
 
   // faz login chamando POST /api/auth/login (proxy redireciona pro auth-service:8001)
+  // backend retorna JSON: { code: string, message: string (JWT em sucesso), status: string }
   async login(email: string, password: string): Promise<boolean> {
     if (!email || !password) {
       return false;
     }
 
     try {
-      // backend retorna texto puro: token JWT em sucesso, mensagem de erro caso contrário
       const response = await firstValueFrom(
-        this.http.post('/api/auth/login', { email, password }, { responseType: 'text' }),
+        this.http.post<{ code: string; message: string; status: string }>(
+          '/api/auth/login',
+          { email, password },
+        ),
       );
 
-      // heurística: JWT sempre começa com "eyJ" (base64 de '{"'). Se não, é erro.
-      if (!response || !response.startsWith('eyJ')) {
+      // em sucesso, o JWT vem dentro de "message". JWT sempre começa com "eyJ".
+      const token = response?.message;
+      if (!token || !token.startsWith('eyJ')) {
         return false;
       }
 
-      // sucesso — guarda o token e restaura o user a partir dele
-      this.tokenSignal.set(response);
-      this.persistToken(response);
-      this.userSignal.set(this.userFromToken(response));
+      // sucesso — guarda o token
+      this.tokenSignal.set(token);
+      this.persistToken(token);
+
+      // monta o user com o que sabemos (sub do JWT + email digitado + nome derivado)
+      // se já tinha name salvo (vindo do cadastro), preserva
+      const previous = this.userSignal();
+      const user: User = {
+        id: this.decodeJwtPayload(token)?.['sub'] as string ?? crypto.randomUUID(),
+        email,
+        name: previous?.name ?? email.split('@')[0] ?? 'Usuário',
+      };
+      this.userSignal.set(user);
+      this.persistUser(user);
 
       // redireciona pra área logada (/ é o dashboard)
       this.router.navigate(['/']);
@@ -92,6 +119,10 @@ export class AuthService {
     try {
       // POST /api/auth → cria o usuário (proxy redireciona pro auth-service)
       await firstValueFrom(this.http.post('/api/auth', input));
+
+      // pré-salva o name digitado pra o login() preservar
+      // (login() não tem como descobrir o name a partir do JWT atual)
+      this.userSignal.set({ id: '', email: input.email, name: input.name });
 
       // cadastrado com sucesso → loga automaticamente com as mesmas credenciais
       const loggedIn = await this.login(input.email, input.password);
@@ -115,23 +146,8 @@ export class AuthService {
     this.tokenSignal.set(null);
     this.userSignal.set(null);
     localStorage.removeItem(TOKEN_STORAGE_KEY);
+    localStorage.removeItem(USER_STORAGE_KEY);
     this.router.navigate(['/auth/login']);
-  }
-
-  // monta o User a partir do payload do JWT (sub, email, name)
-  // se token nulo ou inválido, retorna null
-  private userFromToken(token: string | null): User | null {
-    if (!token) return null;
-    const payload = this.decodeJwtPayload(token);
-    if (!payload) return null;
-
-    const email = (payload['email'] as string) ?? '';
-    return {
-      id: (payload['sub'] as string) ?? crypto.randomUUID(),
-      email,
-      // backend ainda não inclui "name" no JWT — fallback usa parte antes do @
-      name: (payload['name'] as string) ?? email.split('@')[0] ?? 'Usuário',
-    };
   }
 
   // decodifica o payload (parte do meio) de um JWT
@@ -152,8 +168,25 @@ export class AuthService {
     return localStorage.getItem(TOKEN_STORAGE_KEY);
   }
 
+  // lê user persistido do localStorage (chamado no init do signal)
+  private readUserFromStorage(): User | null {
+    if (typeof localStorage === 'undefined') return null;
+    const raw = localStorage.getItem(USER_STORAGE_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as User;
+    } catch {
+      return null;
+    }
+  }
+
   // persiste token no localStorage
   private persistToken(token: string): void {
     localStorage.setItem(TOKEN_STORAGE_KEY, token);
+  }
+
+  // persiste user no localStorage
+  private persistUser(user: User): void {
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
   }
 }

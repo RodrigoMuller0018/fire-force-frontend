@@ -1,0 +1,57 @@
+/* Sidebar: coluna esquerda fixa (240px), branca, com links */
+
+:host {
+  display: block;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: var(--app-surface);
+  border-right: 1px solid var(--app-border);
+  padding: var(--space-4) var(--space-2);
+  min-height: calc(100vh - 62px); /* preenche altura abaixo da topbar */
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--app-text);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.nav-link i {
+  font-size: 1.05rem;
+  color: var(--app-text-muted);
+  transition: color 0.15s;
+}
+
+.nav-link:hover {
+  background-color: var(--app-bg);
+}
+
+/* "active" é colocado pelo routerLinkActive quando a rota está ativa */
+.nav-link.active {
+  background-color: var(--app-primary);
+  color: white;
+}
+
+.nav-link.active i {
+  color: white;
+}
+
+/* responsivo: sidebar mais estreita em telas médias */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 200px;
+  }
+}

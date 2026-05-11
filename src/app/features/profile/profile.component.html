@@ -1,0 +1,52 @@
+<header class="page-header">
+  <h1>Perfil</h1>
+  <p>Suas informações de acesso</p>
+</header>
+
+@if (auth.user(); as user) {
+  <!-- card identidade -->
+  <section class="card identity-card">
+    <div class="avatar">{{ initials() }}</div>
+    <div class="identity-info">
+      <strong class="name">{{ user.name }}</strong>
+      <span class="email">{{ user.email }}</span>
+
+      <span class="id-label">ID do usuário</span>
+      <code class="id-value">{{ user.id }}</code>
+    </div>
+  </section>
+
+  <!-- card sessão -->
+  <section class="card session-card">
+    <h2>Sessão atual</h2>
+
+    @if (auth.tokenInfo(); as info) {
+      <div class="session-grid">
+        <div class="session-item">
+          <span class="session-label">Login feito em</span>
+          <strong>{{ info.issuedAt | date: 'dd/MM/yyyy HH:mm:ss' }}</strong>
+        </div>
+
+        <div class="session-item">
+          <span class="session-label">Sessão expira em</span>
+          <strong>{{ info.expiresAt | date: 'dd/MM/yyyy HH:mm:ss' }}</strong>
+          @if (timeRemaining(); as remaining) {
+            <small class="muted">(em {{ remaining }})</small>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="logout-row">
+      <p-button
+        label="Sair da conta"
+        icon="pi pi-sign-out"
+        severity="danger"
+        [outlined]="true"
+        (onClick)="logout()"
+      ></p-button>
+    </div>
+  </section>
+} @else {
+  <p-message severity="warn" text="Não foi possível carregar dados do usuário."></p-message>
+}

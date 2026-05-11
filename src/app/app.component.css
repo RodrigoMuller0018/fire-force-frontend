@@ -1,0 +1,5 @@
+/* app-root é a raiz — não precisa de estilos próprios; cada feature tem o seu */
+:host {
+  display: block;
+  min-height: 100vh;
+}

@@ -1,0 +1,91 @@
+/* estilos do componente Login — encapsulados (não vazam pra outras telas) */
+
+/* página inteira ocupa a viewport e centraliza o card */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: linear-gradient(135deg, #f4f6f8 0%, #e0e7ef 100%);
+}
+
+/* card do login (a "caixa" branca com o form) */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--app-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.login-icon {
+  font-size: 3rem;
+  color: var(--app-primary);
+  margin-bottom: var(--space-3);
+}
+
+.login-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-2) 0;
+  color: var(--app-text);
+}
+
+.login-subtitle {
+  margin: 0;
+  color: var(--app-text-muted);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* cada campo (label + input + erro) agrupado num bloco */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.field label {
+  font-weight: 500;
+  color: var(--app-text);
+}
+
+/* texto de erro abaixo do campo */
+.error-text {
+  color: var(--app-danger);
+  font-size: 0.85rem;
+}
+
+/* link de cadastro */
+.signup-link {
+  text-align: center;
+  margin: var(--space-3) 0 0 0;
+  color: var(--app-text-muted);
+}
+
+.signup-link a {
+  color: var(--app-primary);
+  font-weight: 500;
+  text-decoration: none;
+  margin-left: var(--space-1);
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+/* utilitário local: ocupa 100% da largura do form (usado em p-button e p-message) */
+:host ::ng-deep .full-width {
+  width: 100%;
+}

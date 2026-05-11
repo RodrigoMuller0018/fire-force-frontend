@@ -1,0 +1,34 @@
+/* página 404 — centralizada na tela */
+
+.not-found {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background-color: var(--app-bg);
+}
+
+.content {
+  text-align: center;
+  max-width: 400px;
+}
+
+.icon {
+  font-size: 4rem;
+  color: var(--app-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.content h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin: 0 0 var(--space-2) 0;
+  color: var(--app-text);
+}
+
+.content p {
+  margin: 0 0 var(--space-5) 0;
+  color: var(--app-text-muted);
+  font-size: 1rem;
+}

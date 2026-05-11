@@ -1,0 +1,37 @@
+<header class="topbar">
+  <!-- esquerda: botão de menu + logo -->
+  <div class="topbar-left">
+    <button
+      type="button"
+      class="menu-btn"
+      aria-label="Abrir menu"
+      (click)="onToggleClick()"
+    >
+      <i class="pi pi-bars"></i>
+    </button>
+
+    <a routerLink="/" class="brand">
+      <i class="pi pi-bolt"></i>
+      <span>FIRE-FORCE</span>
+    </a>
+  </div>
+
+  <!-- direita: avatar + dropdown -->
+  <div class="topbar-right">
+    @if (auth.user(); as user) {
+      <button
+        type="button"
+        class="user-btn"
+        aria-label="Menu do usuário"
+        (click)="userMenu.toggle($event)"
+      >
+        <span class="user-avatar">{{ user.name.charAt(0).toUpperCase() }}</span>
+        <span class="user-name">{{ user.name }}</span>
+        <i class="pi pi-chevron-down"></i>
+      </button>
+
+      <!-- p-menu controlado: abre quando clicamos no botão acima -->
+      <p-menu #userMenu [model]="userMenuItems" [popup]="true" appendTo="body"></p-menu>
+    }
+  </div>
+</header>
