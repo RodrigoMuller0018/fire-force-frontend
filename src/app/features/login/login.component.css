@@ -7,7 +7,17 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
-  background: linear-gradient(135deg, #f4f6f8 0%, #e0e7ef 100%);
+  background: var(--app-bg);
+}
+
+.login-topbar {
+  position: absolute;
+
+  top: var(--space-4);
+  right: var(--space-4);
+
+  display: flex;
+  align-items: center;
 }
 
 /* card do login (a "caixa" branca com o form) */

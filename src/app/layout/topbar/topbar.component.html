@@ -18,6 +18,7 @@
 
   <!-- direita: avatar + dropdown -->
   <div class="topbar-right">
+    <app-theme></app-theme>
     @if (auth.user(); as user) {
       <button
         type="button"
@@ -26,7 +27,7 @@
         (click)="userMenu.toggle($event)"
       >
         <span class="user-avatar">{{ user.name.charAt(0).toUpperCase() }}</span>
-        <span class="user-name">{{ user.name }}</span>
+        <span class="user-name">{{ user.name.split(' ')[0] }}</span>
         <i class="pi pi-chevron-down"></i>
       </button>
 

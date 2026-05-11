@@ -7,6 +7,7 @@ import { MessageModule } from 'primeng/message';
 import { PasswordModule } from 'primeng/password';
 
 import { AuthService } from '../../core/services/auth.service';
+import { ThemeComponent } from "@/app/layout/theme/theme";
 
 // página de login — autentica o usuário e redireciona pro dashboard
 @Component({
@@ -20,7 +21,8 @@ import { AuthService } from '../../core/services/auth.service';
     MessageModule,
     ReactiveFormsModule,
     RouterModule,
-  ],
+    ThemeComponent
+],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })

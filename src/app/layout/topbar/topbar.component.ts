@@ -1,16 +1,17 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, effect, HostBinding, inject, output, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 
 import { AuthService } from '../../core/services/auth.service';
+import { ThemeComponent } from "../theme/theme";
 
 // Topbar: barra superior com botão menu, logo e menu do usuário (perfil/logout)
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [RouterModule, ButtonModule, MenuModule],
+  imports: [RouterModule, ButtonModule, MenuModule, ThemeComponent],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.css',
 })

@@ -84,6 +84,13 @@
   font-size: 0.85rem;
 }
 
+@media (min-width: 480px) {
+  .user-name {
+    font-size: 1rem;
+    font-weight: bold;    
+  }
+}
+
 /* esconde nome do usuário em telas pequenas (deixa só o avatar) */
 @media (max-width: 480px) {
   .user-name {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, effect, HostBinding } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 
@@ -10,4 +10,4 @@ import { ToastModule } from 'primeng/toast';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {}
+export class AppComponent{}
