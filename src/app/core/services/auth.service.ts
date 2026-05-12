@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { User } from '../models/user.model';
+import { UserService } from './user.service';
 
 // chaves usadas no localStorage pra persistir token + user entre reloads
 const TOKEN_STORAGE_KEY = 'fire_force_token';
@@ -22,6 +23,7 @@ export class AuthService {
   // injeta dependências
   private readonly router = inject(Router);
   private readonly http = inject(HttpClient);
+  private readonly userService = inject(UserService);
 
   // signal que guarda o token JWT (null = deslogado) — inicial vem do localStorage
   private readonly tokenSignal = signal<string | null>(this.readTokenFromStorage());
@@ -91,14 +93,10 @@ export class AuthService {
 
       // monta o user com o que sabemos (sub do JWT + email digitado + nome derivado)
       // se já tinha name salvo (vindo do cadastro), preserva
-      const previous = this.userSignal();
-      const user: User = {
-        id: this.decodeJwtPayload(token)?.['sub'] as string ?? crypto.randomUUID(),
-        email,
-        name: previous?.name ?? email.split('@')[0] ?? 'Usuário',
-      };
-      this.userSignal.set(user);
-      this.persistUser(user);
+      this.userService.get().subscribe((user) => {
+        this.userSignal.set(user);
+        this.persistUser(user);
+      });
 
       // redireciona pra área logada (/ é o dashboard)
       this.router.navigate(['/']);
@@ -122,7 +120,7 @@ export class AuthService {
 
       // pré-salva o name digitado pra o login() preservar
       // (login() não tem como descobrir o name a partir do JWT atual)
-      this.userSignal.set({ id: '', email: input.email, name: input.name });
+      this.userSignal.set({} as User); // placeholder vazio pra indicar que temos um name salvo
 
       // cadastrado com sucesso → loga automaticamente com as mesmas credenciais
       const loggedIn = await this.login(input.email, input.password);

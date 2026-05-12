@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Account } from '../models/account.model';
-import { ApiResult } from '../models/api-result.model';
+import { ApiResponse } from '../models/api-response.interface';
 
 // chama os endpoints de Account do account-service
 // - GET    /api/account       → lista contas do usuário logado
@@ -14,12 +14,12 @@ export class AccountService {
   private readonly base = '/api/account';
 
   // lista contas; o backend identifica o usuário pelo JWT (interceptor envia)
-  list(): Observable<ApiResult<Account[]>> {
-    return this.http.get<ApiResult<Account[]>>(this.base);
+  list(): Observable<ApiResponse<Account[]>> {
+    return this.http.get<ApiResponse<Account[]>>(this.base);
   }
 
   // cria conta nova
-  create(account: Account): Observable<ApiResult<Account>> {
-    return this.http.post<ApiResult<Account>>(this.base, account);
+  create(account: Account): Observable<ApiResponse<Account>> {
+    return this.http.post<ApiResponse<Account>>(this.base, account);
   }
 }

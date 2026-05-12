@@ -1,7 +1,13 @@
 {
-  "_comment": "Proxy de dev: redireciona /api/auth/* pro auth-service (8001) e /api/account/* + /api/category/* pro account-service (8002). Evita CORS em desenvolvimento.",
+    "/api/auth": {
+    "target": "http://localhost:8001",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": { "^/api": "" }
+  },
 
-  "/api/auth": {
+  "/api/user": {
     "target": "http://localhost:8001",
     "secure": false,
     "changeOrigin": true,
