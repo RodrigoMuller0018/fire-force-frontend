@@ -91,8 +91,6 @@ export class AuthService {
       this.tokenSignal.set(token);
       this.persistToken(token);
 
-      // monta o user com o que sabemos (sub do JWT + email digitado + nome derivado)
-      // se já tinha name salvo (vindo do cadastro), preserva
       this.userService.get().subscribe((user) => {
         this.userSignal.set(user);
         this.persistUser(user);

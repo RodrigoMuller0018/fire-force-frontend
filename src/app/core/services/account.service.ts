@@ -2,24 +2,24 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Account } from '../models/account.model';
+import { Wallet } from '../models/wallet.model';
 import { ApiResponse } from '../models/api-response.interface';
 
-// chama os endpoints de Account do account-service
-// - GET    /api/account       → lista contas do usuário logado
-// - POST   /api/account       → cria nova conta
+// chama os endpoints de Wallet do wallet-service
+// - GET    /api/wallet       → lista carteiras do usuário logado
+// - POST   /api/wallet       → cria nova carteira
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private readonly http = inject(HttpClient);
-  private readonly base = '/api/account';
+  private readonly base = '/api/wallet';
 
-  // lista contas; o backend identifica o usuário pelo JWT (interceptor envia)
-  list(): Observable<ApiResponse<Account[]>> {
-    return this.http.get<ApiResponse<Account[]>>(this.base);
+  // lista carteiras; o backend identifica o usuário pelo JWT (interceptor envia)
+  list(): Observable<ApiResponse<Wallet[]>> {
+    return this.http.get<ApiResponse<Wallet[]>>(this.base);
   }
 
-  // cria conta nova
-  create(account: Account): Observable<ApiResponse<Account>> {
-    return this.http.post<ApiResponse<Account>>(this.base, account);
+  // cria carteira nova
+  create(wallet: Wallet): Observable<ApiResponse<Wallet>> {
+    return this.http.post<ApiResponse<Wallet>>(this.base, wallet);
   }
 }

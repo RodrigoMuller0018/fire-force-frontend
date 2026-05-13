@@ -5,7 +5,7 @@
 
 @if (auth.user(); as user) {
   <!-- card identidade -->
-  <section class="card identity-card">
+  <section class="session identity-card">
     <div class="avatar">{{ initials() }}</div>
     <div class="identity-info">
       <strong class="name">{{ user.name }}</strong>
@@ -14,7 +14,7 @@
   </section>
 
   <!-- card sessão -->
-  <section class="card session-card">
+  <section class="session session-card">
     <h2>Sessão atual</h2>
 
     @if (auth.tokenInfo(); as info) {

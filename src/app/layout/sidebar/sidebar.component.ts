@@ -21,6 +21,7 @@ export class SidebarComponent {
   protected readonly items: NavItem[] = [
     { label: 'Dashboard', icon: 'pi pi-home', route: '/' },
     { label: 'Perfil', icon: 'pi pi-user', route: '/perfil' },
+    { label: 'Carteira', icon: 'pi pi-wallet', route: '/carteira' },
     // futuras: contas, categorias, transações
     // { label: 'Contas', icon: 'pi pi-wallet', route: '/contas' },
     // { label: 'Categorias', icon: 'pi pi-tags', route: '/categorias' },

@@ -1,33 +1,3 @@
-/* Profile — página de informações do usuário */
-
-.page-header {
-  margin-bottom: var(--space-5);
-}
-
-.page-header h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0 0 var(--space-1) 0;
-}
-
-.page-header p {
-  margin: 0;
-  color: var(--app-text-muted);
-}
-
-.info-msg {
-  margin-bottom: var(--space-4);
-}
-
-/* card base — usado pelos dois cards (identidade e sessão) */
-.card {
-  padding: var(--space-5);
-  background-color: var(--app-surface);
-  border: 1px solid var(--app-border);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-4);
-}
-
 /* card identidade: avatar grande + info */
 .identity-card {
   display: flex;
@@ -89,40 +59,6 @@
   font-family: 'Consolas', 'Courier New', monospace;
   font-size: 0.85rem;
   word-break: break-all;
-}
-
-/* card sessão */
-.session-card h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 0 var(--space-4) 0;
-}
-
-.session-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-4);
-}
-
-@media (max-width: 480px) {
-  .session-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.session-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.session-label {
-  font-size: 0.85rem;
-  color: var(--app-text-muted);
-}
-
-.session-item strong {
-  color: var(--app-text);
 }
 
 .muted {

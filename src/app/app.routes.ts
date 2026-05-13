@@ -41,6 +41,11 @@ export const appRoutes: Routes = [
         loadComponent: () =>
           import('./features/profile/profile.component').then((m) => m.ProfileComponent),
       },
+      {
+        path: 'carteira',
+        loadComponent: () =>
+          import('./features/wallet/wallet.component').then((m) => m.WalletComponent),
+      },
       // futuras features (contas, categorias, transações) entram aqui
     ],
   },
