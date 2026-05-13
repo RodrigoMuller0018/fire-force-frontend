@@ -1,0 +1,278 @@
+<!-- breadcrumb -->
+<nav class="wf-breadcrumb" aria-label="Breadcrumb">
+  <a routerLink="/carteira">Carteiras</a>
+  <i class="pi pi-angle-right"></i>
+  <span>{{ isEditMode() ? 'Editar' : 'Nova carteira' }}</span>
+</nav>
+
+<header class="wf-header">
+  <h1>{{ pageTitle() }}</h1>
+  <p>Cadastre uma nova fonte financeira para organizar suas finanças.</p>
+</header>
+
+<!-- loading inicial (modo edição) -->
+@if (loadingInitial()) {
+  <div class="wf-loading">
+    <i class="pi pi-spin pi-spinner"></i>
+    Carregando dados da carteira...
+  </div>
+} @else {
+  <!-- grid 2 colunas: form esquerda + preview direita -->
+  <div class="wf-grid">
+    <!-- ============ COLUNA ESQUERDA: form ============ -->
+    <section class="wf-card">
+      <h2>Dados da carteira</h2>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="wf-form">
+        <!-- nome + descrição em 2 colunas -->
+        <div class="wf-row">
+          <div class="wf-field">
+            <label for="walletName">Nome da carteira <span class="wf-required">*</span></label>
+            <input
+              id="walletName"
+              type="text"
+              formControlName="name"
+              placeholder="Ex: Nubank"
+              autocomplete="off"
+            />
+            @if (form.controls.name.touched && form.controls.name.invalid) {
+              <small class="wf-error-text">
+                @if (form.controls.name.hasError('required')) { Nome é obrigatório }
+                @else if (form.controls.name.hasError('minlength')) { Mínimo 2 caracteres }
+                @else if (form.controls.name.hasError('maxlength')) { Máximo 100 caracteres }
+              </small>
+            }
+          </div>
+
+          <div class="wf-field">
+            <div class="wf-label-row">
+              <label for="walletDesc">Descrição (opcional)</label>
+              <small class="wf-counter">{{ descriptionCounter() }}</small>
+            </div>
+            <textarea
+              id="walletDesc"
+              formControlName="description"
+              [maxlength]="descriptionMax"
+              placeholder="Para que serve essa carteira?"
+              rows="2"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- tipo de carteira (4 cards selecionáveis) -->
+        <div class="wf-field">
+          <label>Tipo da carteira <span class="wf-required">*</span></label>
+          <div class="wf-type-grid">
+            @for (opt of typeOptions; track opt.type) {
+              <button
+                type="button"
+                class="wf-type-card"
+                [class.active]="previewType() === opt.type"
+                (click)="selectType(opt.type)"
+              >
+                <i [class]="opt.icon"></i>
+                <strong>{{ opt.label }}</strong>
+                <small>{{ opt.description }}</small>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- saldo + moeda -->
+        <div class="wf-row">
+          <div class="wf-field">
+            <label for="walletBalance">
+              {{ isCreditCard() ? 'Saldo da fatura em aberto' : (isEditMode() ? 'Saldo atual' : 'Saldo inicial') }}
+              <span class="wf-required">*</span>
+            </label>
+            <input
+              id="walletBalance"
+              type="number"
+              step="0.01"
+              formControlName="currentBalance"
+              placeholder="0,00"
+            />
+            <small class="wf-hint">Pode ser negativo (ex: fatura em aberto).</small>
+          </div>
+
+          <div class="wf-field">
+            <label>Moeda</label>
+            <input type="text" value="BRL - Real (R$)" disabled />
+          </div>
+        </div>
+
+        <!-- campos só pra Cartão de crédito (renderizam condicionalmente) -->
+        @if (isCreditCard()) {
+          <div class="wf-row wf-credit-row">
+            <div class="wf-field">
+              <label for="creditLimit">Limite do cartão <span class="wf-required">*</span></label>
+              <input
+                id="creditLimit"
+                type="number"
+                step="0.01"
+                formControlName="creditLimit"
+                placeholder="5.000,00"
+              />
+            </div>
+
+            <div class="wf-field">
+              <label for="closingDay">Fechamento <span class="wf-required">*</span></label>
+              <input
+                id="closingDay"
+                type="number"
+                min="1"
+                max="31"
+                formControlName="closingDay"
+                placeholder="Dia (1-31)"
+              />
+            </div>
+
+            <div class="wf-field">
+              <label for="dueDay">Vencimento <span class="wf-required">*</span></label>
+              <input
+                id="dueDay"
+                type="number"
+                min="1"
+                max="31"
+                formControlName="dueDay"
+                placeholder="Dia (1-31)"
+              />
+            </div>
+          </div>
+        }
+
+        <!-- paleta de cores -->
+        <div class="wf-field">
+          <label>Cor da carteira</label>
+          <div class="wf-color-palette">
+            @for (c of colors; track c.value) {
+              <button
+                type="button"
+                class="wf-color-dot"
+                [class.active]="previewColor() === c.value"
+                [style.background]="c.value"
+                [attr.aria-label]="c.label"
+                [title]="c.label"
+                (click)="selectColor(c.value)"
+              ></button>
+            }
+          </div>
+        </div>
+
+        <!-- ícone (opcional) -->
+        <div class="wf-field">
+          <label>Ícone (opcional)</label>
+          <div class="wf-icon-palette">
+            @for (icon of icons; track icon.key) {
+              <button
+                type="button"
+                class="wf-icon-dot"
+                [class.active]="previewIcon() === icon.key"
+                [attr.aria-label]="icon.label"
+                [title]="icon.label"
+                (click)="selectIcon(icon.key)"
+              >
+                <i [class]="icon.glyph"></i>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- erro geral do servidor -->
+        @if (errorMsg()) {
+          <div class="wf-error-banner">
+            <i class="pi pi-exclamation-triangle"></i>
+            {{ errorMsg() }}
+          </div>
+        }
+
+        <!-- ações -->
+        <div class="wf-actions">
+          <button
+            type="button"
+            class="wf-btn wf-btn-secondary"
+            [disabled]="submitting()"
+            (click)="cancel()"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="wf-btn wf-btn-primary"
+            [disabled]="submitting()"
+          >
+            <i class="pi pi-check" *ngIf="!submitting()"></i>
+            <i class="pi pi-spin pi-spinner" *ngIf="submitting()"></i>
+            {{ submitLabel() }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ COLUNA DIREITA: preview ao vivo ============ -->
+    <aside class="wf-preview">
+      <h2>Prévia da carteira</h2>
+      <p class="wf-preview-help">Veja como sua carteira aparecerá no sistema.</p>
+
+      <!-- card preview com gradiente da cor escolhida -->
+      <div
+        class="wf-preview-card"
+        [style.background]="'linear-gradient(135deg, ' + previewColor() + ', ' + previewColor() + 'cc)'"
+      >
+        <div class="wf-preview-head">
+          <div class="wf-preview-avatar">
+            @if (previewIcon()) {
+              <i [class]="icons[0].glyph"
+                 [class.pi-building]="previewIcon() === 'bank'"
+                 [class.pi-money-bill]="previewIcon() === 'cash'"
+                 [class.pi-credit-card]="previewIcon() === 'credit-card'"
+                 [class.pi-wallet]="previewIcon() === 'wallet'"
+                 [class.pi-chart-line]="previewIcon() === 'chart'"
+                 [class.pi-piggy-bank]="previewIcon() === 'piggy'"></i>
+            } @else {
+              <strong>{{ previewInitial() }}</strong>
+            }
+          </div>
+          <div>
+            <strong class="wf-preview-name">{{ previewName() || 'Nome da carteira' }}</strong>
+            <span class="wf-preview-type">{{ previewTypeLabel() }}</span>
+          </div>
+        </div>
+
+        <div class="wf-preview-balance">
+          <span>{{ isCreditCard() ? 'Limite disponível' : 'Saldo atual' }}</span>
+          <strong>{{ formatCurrency(isCreditCard() ? ((previewCreditLimit() ?? 0) + previewBalance()) : previewBalance()) }}</strong>
+        </div>
+      </div>
+
+      <!-- resumo dos dados -->
+      <div class="wf-summary">
+        <h3>Resumo</h3>
+        <dl>
+          <div><dt>Tipo</dt> <dd>{{ previewTypeLabel() }}</dd></div>
+          @if (previewDescription()) {
+            <div><dt>Descrição</dt> <dd>{{ previewDescription() }}</dd></div>
+          }
+          <div>
+            <dt>{{ isCreditCard() ? 'Limite' : 'Saldo' }}</dt>
+            <dd [style.color]="previewColor()">
+              {{ formatCurrency(isCreditCard() ? previewCreditLimit() : previewBalance()) }}
+            </dd>
+          </div>
+          <div><dt>Moeda</dt> <dd>Real (R$)</dd></div>
+          <div>
+            <dt>Cor</dt>
+            <dd>
+              <span class="wf-summary-color" [style.background]="previewColor()"></span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <p class="wf-preview-note">
+        <i class="pi pi-info-circle"></i>
+        Após criar a carteira, você poderá adicionar transações e editar todas as informações.
+      </p>
+    </aside>
+  </div>
+}

@@ -2,10 +2,11 @@
     type="button"
     class="user-btn"
     (click)="toggleTheme()"
+    [attr.aria-label]="darkMode() ? 'Mudar pra tema claro' : 'Mudar pra tema escuro'"
 >
     @if(!darkMode()){
-       <span class="material-icons">dark_mode</span>
+       <i class="pi pi-moon"></i>
     }@else {
-        <span class="material-icons">light_mode</span>
+        <i class="pi pi-sun"></i>
     }
 </button>

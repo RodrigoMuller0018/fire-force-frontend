@@ -1,0 +1,210 @@
+<section class="wallet-list-section">
+  <!-- topo: título + botão "Nova carteira" -->
+  <header class="wallet-list-header">
+    <div class="wallet-list-title">
+      <h1>Carteiras</h1>
+      <p>Gerencie todas as suas fontes financeiras.</p>
+    </div>
+
+    <button type="button" class="wallet-create-button" (click)="goToCreate()">
+      <i class="pi pi-plus"></i>
+      Nova carteira
+    </button>
+  </header>
+
+  <!-- filtros: busca + chips de tipo -->
+  <div class="wallet-filters">
+    <div class="wallet-search">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        placeholder="Buscar carteira..."
+        [(ngModel)]="searchTerm"
+        aria-label="Buscar carteira"
+      />
+    </div>
+
+    <div class="wallet-filter-chips">
+      @for (filter of typeFilters; track filter.value) {
+        <button
+          type="button"
+          class="wallet-chip"
+          [class.active]="activeType() === filter.value"
+          (click)="activeType.set(filter.value)"
+        >
+          {{ filter.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- estados (loading / erro / vazio / grid) -->
+  @if (loading()) {
+    <div class="state-msg">
+      <i class="pi pi-spin pi-spinner"></i>
+      Carregando carteiras...
+    </div>
+  } @else if (errorMsg()) {
+    <div class="state-msg state-error">
+      <i class="pi pi-exclamation-triangle"></i>
+      {{ errorMsg() }}
+    </div>
+  } @else if (filteredWallets().length === 0) {
+    <div class="state-msg">
+      <i class="pi pi-wallet"></i>
+      @if (wallets().length === 0) {
+        Você ainda não tem carteiras. Clique em "Nova carteira" pra criar a primeira.
+      } @else {
+        Nenhuma carteira encontrada com esses filtros.
+      }
+    </div>
+  } @else {
+    <!-- grid de cards -->
+    <section class="wallet-grid">
+      @for (wallet of filteredWallets(); track wallet.uuid) {
+        <article class="wallet-card" (click)="goToEdit(wallet)">
+          <!-- topo: ícone (colorido) + nome/tipo + menu (3 pontos) -->
+          <header class="wallet-card-header">
+            <div class="wallet-card-info">
+              <div
+                class="wallet-card-icon"
+                [style.background]="walletColor(wallet)"
+              >
+                <i [class]="iconClass(wallet)"></i>
+              </div>
+              <div class="wallet-card-name">
+                <h3>{{ wallet.name }}</h3>
+                <span>{{ typeLabel[wallet.type] }}</span>
+              </div>
+            </div>
+
+            <!-- botão dos 3 pontinhos com menu dropdown.
+                 wrapper relativo pra ancorar o dropdown abaixo do botão. -->
+            <div class="wallet-card-menu-wrapper">
+              <button
+                type="button"
+                class="wallet-card-menu-btn"
+                aria-label="Opções da carteira"
+                (click)="toggleMenu(wallet, $event)"
+              >
+                <i class="pi pi-ellipsis-v"></i>
+              </button>
+
+              <!-- dropdown: só renderiza se essa wallet está com menu aberto -->
+              @if (openMenuFor() === wallet.uuid) {
+                <div class="wallet-card-menu-dropdown" (click)="$event.stopPropagation()">
+                  <button type="button" (click)="editFromMenu(wallet, $event)">
+                    <i class="pi pi-pencil"></i>
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    class="menu-item-danger"
+                    (click)="askDelete(wallet, $event)"
+                  >
+                    <i class="pi pi-trash"></i>
+                    Excluir
+                  </button>
+                </div>
+              }
+            </div>
+          </header>
+
+          <!-- corpo: muda conforme o tipo -->
+          <div class="wallet-card-balance">
+            @switch (wallet.type) {
+              <!-- cartão de crédito: mostra LIMITE DISPONÍVEL (limite + saldo) -->
+              @case (WalletType.CREDIT_CARD) {
+                <label>Limite disponível</label>
+                <strong [style.color]="walletColor(wallet)">
+                  {{ formatBalance(availableCredit(wallet)) }}
+                </strong>
+              }
+
+              <!-- investimento: rótulo "Patrimônio" -->
+              @case (WalletType.INVESTMENT) {
+                <label>Patrimônio</label>
+                <strong [style.color]="walletColor(wallet)">
+                  {{ formatBalance(wallet.currentBalance) }}
+                </strong>
+              }
+
+              <!-- default (banco/dinheiro): "Saldo atual" -->
+              @default {
+                <label>Saldo atual</label>
+                <strong [style.color]="walletColor(wallet)">
+                  {{ formatBalance(wallet.currentBalance) }}
+                </strong>
+              }
+            }
+          </div>
+
+          <!-- rodapé: info específica do tipo -->
+          <footer class="wallet-card-footer">
+            @switch (wallet.type) {
+              <!-- cartão: fechamento + vencimento -->
+              @case (WalletType.CREDIT_CARD) {
+                <span>Fechamento dia {{ wallet.closingDay }}</span>
+                <span>Vencimento dia {{ wallet.dueDay }}</span>
+              }
+
+              <!-- demais: status "Atualizado agora" -->
+              @default {
+                <span></span>
+                <span class="wallet-card-status">Atualizado agora</span>
+              }
+            }
+          </footer>
+        </article>
+      }
+
+      <!-- card "+ Adicionar nova carteira" no fim do grid -->
+      <button type="button" class="wallet-add-card" (click)="goToCreate()">
+        <i class="pi pi-plus"></i>
+        <span>Adicionar nova carteira</span>
+      </button>
+    </section>
+  }
+</section>
+
+<!-- ============ MODAL DE CONFIRMAÇÃO DE EXCLUSÃO ============ -->
+<!-- só renderiza quando o signal confirmingDelete() está com uma wallet.
+     overlay escurece o fundo; clicar nele cancela (mesma coisa que "Cancelar"). -->
+@if (confirmingDelete(); as walletToDelete) {
+  <div class="modal-overlay" (click)="cancelDelete()">
+    <!-- stopPropagation no card pra não fechar ao clicar dentro -->
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-icon">
+        <i class="pi pi-exclamation-triangle"></i>
+      </div>
+      <h2 class="modal-title">Excluir carteira?</h2>
+      <p class="modal-text">
+        Tem certeza que deseja excluir <strong>{{ walletToDelete.name }}</strong>?
+        Essa ação não pode ser desfeita pela interface (mas o histórico fica salvo no banco).
+      </p>
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="wf-btn wf-btn-secondary"
+          [disabled]="deleting()"
+          (click)="cancelDelete()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="wf-btn modal-btn-danger"
+          [disabled]="deleting()"
+          (click)="confirmDelete()"
+        >
+          @if (deleting()) {
+            <i class="pi pi-spin pi-spinner"></i>
+          } @else {
+            <i class="pi pi-trash"></i>
+          }
+          Excluir
+        </button>
+      </div>
+    </div>
+  </div>
+}

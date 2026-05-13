@@ -1,0 +1,520 @@
+/* Wallet Form — criar/editar carteira com preview ao vivo
+   Mantém o visual escuro/neon que o Alex desenhou na listagem. */
+
+/* ============ BREADCRUMB ============ */
+.wf-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.wf-breadcrumb a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.wf-breadcrumb a:hover {
+  color: #00ff88;
+}
+
+.wf-breadcrumb i {
+  font-size: 0.7rem;
+}
+
+.wf-breadcrumb span {
+  color: #ffffff;
+}
+
+/* ============ HEADER ============ */
+.wf-header {
+  margin-bottom: 1.5rem;
+}
+
+.wf-header h1 {
+  margin: 0 0 0.25rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.wf-header p {
+  margin: 0;
+  color: #94a3b8;
+}
+
+/* ============ LOADING INICIAL ============ */
+.wf-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem;
+  color: #94a3b8;
+}
+
+.wf-loading i {
+  font-size: 1.5rem;
+}
+
+/* ============ GRID 2 COLUNAS (form + preview) ============ */
+.wf-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .wf-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============ CARD BASE (form + preview compartilham) ============ */
+.wf-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    #081423;
+}
+
+.wf-card h2,
+.wf-preview h2 {
+  margin: 0 0 1.25rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ============ FORM ============ */
+.wf-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.wf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.wf-credit-row {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+@media (max-width: 700px) {
+  .wf-row,
+  .wf-credit-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wf-field label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.wf-required {
+  color: #00ff88;
+}
+
+.wf-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wf-counter {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* inputs uniformes (estilo escuro pra combinar com a listagem) */
+.wf-field input,
+.wf-field textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.wf-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.wf-field input:focus,
+.wf-field textarea:focus {
+  border-color: rgba(0, 255, 136, 0.45);
+  box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.08);
+}
+
+.wf-field input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wf-hint {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.wf-error-text {
+  color: #f87171;
+  font-size: 0.85rem;
+}
+
+/* ============ SELETOR DE TIPO (4 cards) ============ */
+.wf-type-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 700px) {
+  .wf-type-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.wf-type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #cbd5e1;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.2s ease;
+}
+
+.wf-type-card i {
+  font-size: 1.5rem;
+  color: #94a3b8;
+}
+
+.wf-type-card strong {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.wf-type-card small {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  line-height: 1.3;
+}
+
+.wf-type-card:hover {
+  border-color: rgba(0, 255, 136, 0.35);
+}
+
+.wf-type-card.active {
+  border-color: rgba(0, 255, 136, 0.6);
+  background: rgba(0, 255, 136, 0.12);
+}
+
+.wf-type-card.active i {
+  color: #00ff88;
+}
+
+/* ============ PALETA DE CORES ============ */
+.wf-color-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.wf-color-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: 0.2s ease;
+  position: relative;
+}
+
+.wf-color-dot:hover {
+  transform: scale(1.1);
+}
+
+.wf-color-dot.active {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.wf-color-dot.active::after {
+  content: '\2713'; /* check mark */
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* ============ PALETA DE ÍCONES ============ */
+.wf-icon-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.wf-icon-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.wf-icon-dot:hover {
+  border-color: rgba(0, 255, 136, 0.35);
+  color: #ffffff;
+}
+
+.wf-icon-dot.active {
+  border-color: rgba(0, 255, 136, 0.6);
+  background: rgba(0, 255, 136, 0.12);
+  color: #00ff88;
+}
+
+.wf-icon-dot i {
+  font-size: 1.1rem;
+}
+
+/* ============ ERRO ============ */
+.wf-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 12px;
+  background: rgba(248, 113, 113, 0.08);
+  color: #f87171;
+  font-size: 0.9rem;
+}
+
+/* ============ AÇÕES (Cancelar / Salvar) ============ */
+.wf-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.wf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 44px;
+  padding: 0 1.25rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.wf-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wf-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+}
+
+.wf-btn-secondary:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+.wf-btn-primary {
+  background: linear-gradient(135deg, #00c853, #00e676);
+  color: #ffffff;
+}
+
+.wf-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 230, 118, 0.35);
+}
+
+/* ============ PREVIEW (lateral direita) ============ */
+.wf-preview {
+  position: sticky;
+  top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.wf-preview-help {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* card de preview com gradiente da cor escolhida */
+.wf-preview-card {
+  padding: 1.5rem;
+  border-radius: 22px;
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.wf-preview-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.wf-preview-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 1.3rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.wf-preview-avatar i {
+  font-size: 1.3rem;
+}
+
+.wf-preview-name {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.wf-preview-type {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.wf-preview-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.wf-preview-balance span {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.wf-preview-balance strong {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* resumo dos dados */
+.wf-summary {
+  padding: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.wf-summary h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.wf-summary dl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.wf-summary dl > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.wf-summary dt {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.wf-summary dd {
+  margin: 0;
+  color: #ffffff;
+  font-size: 0.9rem;
+  text-align: right;
+  word-break: break-word;
+}
+
+.wf-summary-color {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.wf-preview-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.08);
+  color: #93c5fd;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.wf-preview-note i {
+  font-size: 1rem;
+  margin-top: 0.1rem;
+}
