@@ -113,7 +113,8 @@
   width: 100%;
   height: 48px;
 
-  padding: 0 3rem 0 1rem;
+  /* padding-left maior pra dar espaço à lupa que fica posicionada à esquerda */
+  padding: 0 1rem 0 3rem;
 
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
@@ -405,6 +406,217 @@
   color: #ffffff;
   font-size: 1rem;
   font-weight: 500;
+}
+
+/* estados (loading / erro / vazio) — usados antes do grid de cards */
+.state-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+
+  padding: 3rem 1rem;
+
+  color: #94a3b8;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.state-msg.state-error {
+  color: #f87171;
+}
+
+.state-msg i {
+  font-size: 1.5rem;
+}
+
+/* cursor de "clicável" nos cards (porque agora o click navega pra edição) */
+.wallet-card {
+  cursor: pointer;
+}
+
+/* ============ MENU DROPDOWN (3 pontinhos no card) ============ */
+.wallet-card-menu-wrapper {
+  position: relative;
+}
+
+/* botão dos 3 pontinhos: removo estilo padrão de button */
+.wallet-card-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.wallet-card-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+/* dropdown: posicionado absolute relativo ao wrapper, fica abaixo do botão */
+.wallet-card-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 10;
+
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+
+  padding: 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: #0d1a2e;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.wallet-card-menu-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.wallet-card-menu-dropdown button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+/* botão de excluir em vermelho */
+.wallet-card-menu-dropdown .menu-item-danger {
+  color: #f87171;
+}
+
+.wallet-card-menu-dropdown .menu-item-danger:hover {
+  background: rgba(248, 113, 113, 0.1);
+  color: #fca5a5;
+}
+
+/* ============ MODAL DE CONFIRMAÇÃO ============ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 440px;
+
+  padding: 2rem;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    #081423;
+
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.modal-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+
+  border-radius: 50%;
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+  font-size: 1.75rem;
+}
+
+.modal-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.modal-text {
+  margin: 0 0 1.5rem 0;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.modal-text strong {
+  color: #ffffff;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.modal-btn-danger {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: #ffffff;
+}
+
+.modal-btn-danger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+}
+
+/* botões reutilizáveis (mesmas classes do wallet-form, replicadas aqui pra ser auto-suficiente) */
+.wf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 44px;
+  padding: 0 1.25rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.wf-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wf-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+}
+
+.wf-btn-secondary:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
 }
 
 /* responsividade */

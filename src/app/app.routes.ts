@@ -44,9 +44,19 @@ export const appRoutes: Routes = [
       {
         path: 'carteira',
         loadComponent: () =>
-          import('./features/wallet/wallet.component').then((m) => m.WalletComponent),
+          import('./features/wallet/list/wallet-list.component').then((m) => m.WalletListComponent),
       },
-      // futuras features (contas, categorias, transações) entram aqui
+      {
+        path: 'carteira/nova',
+        loadComponent: () =>
+          import('./features/wallet/form/wallet-form.component').then((m) => m.WalletFormComponent),
+      },
+      {
+        path: 'carteira/editar/:uuid',
+        loadComponent: () =>
+          import('./features/wallet/form/wallet-form.component').then((m) => m.WalletFormComponent),
+      },
+      // futuras features (categorias, transações) entram aqui
     ],
   },
 

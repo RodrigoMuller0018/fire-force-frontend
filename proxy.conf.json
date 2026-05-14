@@ -1,5 +1,5 @@
 {
-    "/api/auth": {
+  "/api/auth": {
     "target": "http://localhost:8001",
     "secure": false,
     "changeOrigin": true,
@@ -15,7 +15,7 @@
     "pathRewrite": { "^/api": "" }
   },
 
-  "/api/account": {
+  "/api/wallet": {
     "target": "http://localhost:8002",
     "secure": false,
     "changeOrigin": true,
