@@ -11,7 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
   standalone: true,
   imports: [DatePipe, ButtonModule, MessageModule],
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css', '././../../shared/styles/session.css'],
+  styleUrls: ['./profile.component.css', '../../shared/styles/section.css'],
 })
 export class ProfileComponent {
   // expõe auth pro template (user + tokenInfo)

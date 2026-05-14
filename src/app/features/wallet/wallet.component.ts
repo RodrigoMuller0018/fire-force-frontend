@@ -7,12 +7,12 @@ import { Component } from '@angular/core';
     imports: [CommonModule],
     standalone: true,
     templateUrl: './wallet.component.html',
-    styleUrls: ['./wallet.component.css']
+    styleUrls: ['./wallet.component.css', '../../shared/styles/section.css']
 })
 export class WalletComponent {
     Wallets: Wallet[] = [{
         uuid: '1lmfda90sdas0',
-        name: 'Carteira Principal',
+        name: 'Nubank',
         currentBalance: 1500.00,
         description: 'Minha carteira principal para despesas diárias',
         userUuid: 'user-uuid-123'
@@ -23,6 +23,30 @@ export class WalletComponent {
         description: 'Minha carteira secundária para despesas diárias',
         userUuid: 'user-uuid-123'
     }, {
+        uuid: '1okenm12o3nm1o2l',
+        name: 'Carteira Terciária',
+        currentBalance: 3000.00,
+        description: 'Minha carteira terciária para despesas diárias',
+        userUuid: 'user-uuid-123'
+    }, {
+        uuid: '1okenm12o3nm1o2l',
+        name: 'Carteira Terciária',
+        currentBalance: 3000.00,
+        description: 'Minha carteira terciária para despesas diárias',
+        userUuid: 'user-uuid-123'
+    },  {
+        uuid: '1okenm12o3nm1o2l',
+        name: 'Carteira Terciária',
+        currentBalance: 3000.00,
+        description: 'Minha carteira terciária para despesas diárias',
+        userUuid: 'user-uuid-123'
+    },  {
+        uuid: '1okenm12o3nm1o2l',
+        name: 'Carteira Terciária',
+        currentBalance: 3000.00,
+        description: 'Minha carteira terciária para despesas diárias',
+        userUuid: 'user-uuid-123'
+    },  {
         uuid: '1okenm12o3nm1o2l',
         name: 'Carteira Terciária',
         currentBalance: 3000.00,

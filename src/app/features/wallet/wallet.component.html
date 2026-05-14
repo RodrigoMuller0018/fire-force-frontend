@@ -2,17 +2,28 @@
   <h1>Carteira</h1>
 </header>
 
-<section class="session-wallets">
+<section class="session session-wallets">
+
   @for (wallet of Wallets; track wallet.uuid) {
     <article class="wallet-card">
+      <div class="card-header">
+        <i class="pi pi-building-columns" style="font-size: 2.5rem;"></i>
+        <div class="card-header-text">
+          <h2 style="margin-bottom: 0">{{ wallet.name }}</h2>
+          <h4 style="margin-top: 0; color:var(--app-text-muted)"> Banco digital </h4>
+        </div>
+      </div>
 
-      <h2>{{ wallet.name }}</h2>
+      <div class="card-body">
+        <label class="wallet-card-balance">Saldo atual</label>
+        <strong class="wallet-balance">
+          {{ wallet.currentBalance | currency:'BRL':'symbol':'1.2-2' }}
+        </strong>
+      </div>
 
-      <p>{{ wallet.description }}</p>
-
-      <span class="wallet-balance">
-        R$ {{ wallet.currentBalance }}
-      </span>
+      <div class="wallet-card-footer">
+        <span>152 transações</span>
+      </div>
 
     </article>
   }
