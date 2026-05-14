@@ -36,6 +36,9 @@ export class WalletFormComponent {
   protected readonly colors = WALLET_COLORS;
   protected readonly icons = WALLET_ICONS;
 
+  // opções de dia 1-31 pros dropdowns de fechamento/vencimento
+  protected readonly dayOptions = Array.from({ length: 31 }, (_, i) => i + 1);
+
   // 4 tipos no seletor (cards no topo do form)
   protected readonly typeOptions: TypeOption[] = [
     { type: WalletType.CHECKING, label: 'Banco', description: 'Contas em bancos digitais ou tradicionais', icon: 'pi pi-building' },
@@ -57,6 +60,13 @@ export class WalletFormComponent {
 
   // contador de caracteres da descrição (visível no rótulo)
   readonly descriptionMax = 120;
+
+  // 13 dígitos = R$ 99.999.999.999,99 (coluna no banco é NUMERIC(19,2))
+  private readonly MAX_CURRENCY_DIGITS = 13;
+
+  // texto exibido nos inputs de moeda (formato BR "1.234,56"); o form guarda number puro
+  readonly balanceDisplay = signal('');
+  readonly creditLimitDisplay = signal('');
 
   // form reativo
   // observa: o validator de credit_limit/closing_day/due_day depende do tipo;
@@ -90,10 +100,34 @@ export class WalletFormComponent {
   // mostra os campos de cartão de crédito só quando tipo = CREDIT_CARD
   readonly isCreditCard = computed(() => this.previewType() === WalletType.CREDIT_CARD);
 
+  // saldo negativo só faz sentido em conta corrente (cheque especial) e cartão (fatura)
+  readonly allowNegativeBalance = computed(() => {
+    const t = this.previewType();
+    return t === WalletType.CHECKING || t === WalletType.CREDIT_CARD;
+  });
+
+  // limite disponível do cartão (nunca negativo) — preview
+  readonly availableLimit = computed(() => {
+    const limit = this.previewCreditLimit() ?? 0;
+    const balance = this.previewBalance();
+    return Math.max(0, limit - Math.abs(balance));
+  });
+
   constructor() {
     // sincroniza form ↔ signals do preview
     this.form.controls.name.valueChanges.subscribe((v) => this.previewName.set(v ?? ''));
-    this.form.controls.type.valueChanges.subscribe((v) => this.previewType.set(v ?? WalletType.CHECKING));
+    this.form.controls.type.valueChanges.subscribe((v) => {
+      const newType = v ?? WalletType.CHECKING;
+      this.previewType.set(newType);
+      // ao trocar de tipo, se o novo tipo não permite negativo, vira positivo
+      const allowsNeg = newType === WalletType.CHECKING || newType === WalletType.CREDIT_CARD;
+      const current = this.form.controls.currentBalance.value;
+      if (!allowsNeg && current < 0) {
+        const positive = Math.abs(current);
+        this.form.controls.currentBalance.setValue(positive);
+        this.balanceDisplay.set(this.formatCurrencyValue(positive));
+      }
+    });
     this.form.controls.currentBalance.valueChanges.subscribe((v) => this.previewBalance.set(v ?? 0));
     this.form.controls.color.valueChanges.subscribe((v) => this.previewColor.set(v ?? this.colors[0].value));
     this.form.controls.icon.valueChanges.subscribe((v) => this.previewIcon.set(v));
@@ -125,6 +159,9 @@ export class WalletFormComponent {
           closingDay: wallet?.closingDay ?? null,
           dueDay: wallet?.dueDay ?? null,
         });
+        // sincroniza os displays formatados dos campos de moeda
+        this.balanceDisplay.set(this.formatCurrencyValue(wallet?.currentBalance));
+        this.creditLimitDisplay.set(this.formatCurrencyValue(wallet?.creditLimit));
         this.loadingInitial.set(false);
       },
       error: (err) => {
@@ -132,6 +169,53 @@ export class WalletFormComponent {
         this.loadingInitial.set(false);
       },
     });
+  }
+
+  // parser "cents-based": cada dígito digitado vira centavo
+  // "1" → 0,01 / "123" → 1,23 / "12345" → 123,45
+  private parseCurrency(raw: string, allowNegative: boolean): { value: number; display: string } {
+    const isNegative = allowNegative && raw.trim().startsWith('-');
+    const digits = raw.replace(/\D/g, '').slice(0, this.MAX_CURRENCY_DIGITS);
+
+    if (digits === '') {
+      return { value: 0, display: isNegative ? '-' : '' };
+    }
+
+    const cents = parseInt(digits, 10);
+    const value = (isNegative ? -1 : 1) * (cents / 100);
+    const display = value.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return { value, display };
+  }
+
+  // formata number existente (usado no modo edição pra preencher o display)
+  private formatCurrencyValue(value: number | null | undefined): string {
+    if (value == null || value === 0) return '';
+    return value.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  // handler (input) do campo Saldo atual — permite negativo só pra conta corrente e cartão
+  onBalanceInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const { value, display } = this.parseCurrency(input.value, this.allowNegativeBalance());
+    this.balanceDisplay.set(display);
+    this.form.controls.currentBalance.setValue(value);
+    // força atualização do DOM (o [value] não dispara quando o display já era o mesmo)
+    input.value = display;
+  }
+
+  // handler (input) do campo Limite do cartão — só positivo
+  onCreditLimitInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const { value, display } = this.parseCurrency(input.value, false);
+    this.creditLimitDisplay.set(display);
+    this.form.controls.creditLimit.setValue(value || null);
+    input.value = display;
   }
 
   // seletor de tipo (4 cards) — alterado por click
@@ -167,6 +251,12 @@ export class WalletFormComponent {
       }
       if (due == null || due < 1 || due > 31) {
         this.errorMsg.set('Dia de vencimento inválido (1-31).');
+        return;
+      }
+      // fatura em aberto não pode passar do limite
+      const balance = this.form.controls.currentBalance.value ?? 0;
+      if (Math.abs(balance) > cl) {
+        this.errorMsg.set('Saldo da fatura não pode exceder o limite do cartão.');
         return;
       }
     }

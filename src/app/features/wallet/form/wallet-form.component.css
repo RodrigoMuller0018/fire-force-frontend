@@ -144,10 +144,12 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* inputs uniformes (estilo escuro pra combinar com a listagem) */
+/* inputs uniformes (estilo escuro pra combinar com a listagem)*/
 .wf-field input,
-.wf-field textarea {
+.wf-field textarea,
+.wf-field select {
   width: 100%;
+  box-sizing: border-box;
   padding: 0.75rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
@@ -155,22 +157,44 @@
   color: #ffffff;
   font-family: inherit;
   font-size: 0.95rem;
+  line-height: 1.5;
   outline: none;
-  transition: 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .wf-field textarea {
   resize: vertical;
   min-height: 80px;
+  /* digitação mais fluida em textarea longo */
+  overflow-y: auto;
+}
+
+/* select: chevron customizado pra combinar com o tema escuro */
+.wf-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path fill='%2394a3b8' d='M6 8L1 3h10z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+}
+
+.wf-field select option {
+  background: #0b1a2e;
+  color: #ffffff;
 }
 
 .wf-field input:focus,
-.wf-field textarea:focus {
+.wf-field textarea:focus,
+.wf-field select:focus {
   border-color: rgba(0, 255, 136, 0.45);
   box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.08);
 }
 
-.wf-field input:disabled {
+.wf-field input:disabled,
+.wf-field select:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -241,6 +265,34 @@
 
 .wf-type-card.active i {
   color: #00ff88;
+}
+
+/* card travado no modo edição: mantém o "active" visível mas não interativo */
+.wf-type-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.wf-type-card:disabled:hover {
+  border-color: rgba(255, 255, 255, 0.08); /* anula o hover verde */
+}
+
+.wf-type-card.active:disabled {
+  opacity: 1; /* o selecionado fica nítido pra deixar claro qual é o tipo atual */
+}
+
+/* hint do cadeado abaixo dos cards (modo edição) */
+.wf-hint-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.wf-hint-lock i {
+  color: #fbbf24; /* amarelo discreto pra chamar atenção sem alarmar */
 }
 
 /* ============ PALETA DE CORES ============ */
